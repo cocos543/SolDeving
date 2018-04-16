@@ -6,7 +6,8 @@ import "./SafaMath.sol";
 
 /**
  * @title WorldCupFactory
- * @dev Declare token struct, and enerating all toekn
+ * @author Cocos
+ * @dev Declare token struct, and generated all toekn
  */
 contract WorldCupFactory is Claimable, Pausable {
 
@@ -27,8 +28,6 @@ contract WorldCupFactory is Claimable, Pausable {
 
 	Country[] public countries;
 
-    mapping (address => uint) ownershipTokenCount;
-
     /// @dev A mapping from countryIDs to an address that has been approved to call
     ///  transferFrom(). Each Country can only have one approved address for transfer
     ///  at any time. A zero value means no approval is outstanding.
@@ -36,7 +35,7 @@ contract WorldCupFactory is Claimable, Pausable {
 
 	// @dev A mapping from owner address to count of tokens that address owns.
     //  Used internally inside balanceOf() to resolve ownership count.
-	mapping (address => uint) public ownerTokenCount;
+	mapping (address => uint) ownerTokenCount;
 
 	
 	/// @dev The WorldCupFactory constructor sets the initialized price of One token
@@ -54,7 +53,7 @@ contract WorldCupFactory is Claimable, Pausable {
 	function _createToken(string _name) internal {
 		uint id = countries.push( Country(_name, initPrice) ) - 1;
 		tokenToOwner[id] = msg.sender;
-		ownerTokenCount[msg.sender].add(1);
+		ownerTokenCount[msg.sender] = ownerTokenCount[msg.sender].add(1);
 	}
 
 }
