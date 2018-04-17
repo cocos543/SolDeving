@@ -27,6 +27,8 @@ contract WorldCupAuction is WorldCupOwnership {
 	///  Note!!! Using 'wei' for eth's cap units. Using minimum units for erc20 token cap units.
 	uint public cap;
 
+    uint public finalCap;
+
 	/// @dev 1 equal to 0.001
 	/// erc721 token's price increasing. Each purchase the price increases 5%
 	uint public increasePermillage = 50;
@@ -44,12 +46,15 @@ contract WorldCupAuction is WorldCupOwnership {
     bool public isEthPayable;
 
     /// @dev Constructor
+    /// @param _initPrice erc721 token initialized price.
+    /// @param _cap Upper limit of increase price.
     /// @param _isEthPayable 
     /// @param _address PayerInterface address, it must be a ERC20 contract.
     function WorldCupAuction(uint _initPrice, uint _cap, bool _isEthPayable, address _address) public WorldCupFactory(_initPrice) {
         require( (_isEthPayable == false && _address != address(0)) || _isEthPayable == true && _address == address(0) );
 
         cap           = _cap;
+        finalCap      = _cap.add(_cap.mul(25).div(1000));
         isEthPayable  = _isEthPayable;
         payerContract = PayerInterface(_address);
     }
@@ -70,7 +75,7 @@ contract WorldCupAuction is WorldCupOwnership {
 
     	address oldOwner = ownerOf(_tokenId);
 
-    	// Refund eth to the person who owner this erc721 token.
+    	// Refund eth to the person who owned this erc721 token.
     	oldOwner.transfer(oldOwnerRefund);
 
     	// Transfer fee to the cooAddress.
@@ -94,10 +99,38 @@ contract WorldCupAuction is WorldCupOwnership {
     	require(payerContract != address(0));
     	require(msg.sender != tokenToOwner[_tokenId]);
 
+        Country storage token = countries[_tokenId];
+        uint nextPrice = _computeNextPrice(token);
+
+        // We need to know how much erc20 token allows our contract to transfer.
+        uint256 aValue = payerContract.allowance(msg.sender, address(this));
+        require(aValue >= nextPrice);
+
+        uint fee = nextPrice.mul(sysFeePermillage).div(1000);
+        uint oldOwnerRefund = nextPrice.sub(fee);
+
+        address oldOwner = ownerOf(_tokenId);
+
+        // Refund erc20 token to the person who owned this erc721 token.
+        require(payerContract.transferFrom(msg.sender, oldOwner, oldOwnerRefund));
+
+        // Transfer fee to the cooAddress.
+        require(payerContract.transferFrom(msg.sender, cooAddress, fee));
+
+        // Update token price
+        token.price = nextPrice;
+
+        _transfer(oldOwner, msg.sender, _tokenId);
+
+        PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
 
     }
 
     function _computeNextPrice(Country storage token) private view returns(uint) {
+        if (token.price >= cap) {
+            return finalCap;
+        }
+
     	uint price = token.price;
     	uint addPrice = price.mul(increasePermillage).div(1000);
 
