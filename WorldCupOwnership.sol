@@ -31,7 +31,7 @@ contract WorldCupOwnership is WorldCupHelper, ERC721Basic {
 
 	function _transfer(address _from, address _to, uint256 _tokenId) internal {
 		ownerTokenCount[_to] = ownerTokenCount[_to].add(1);
-		ownerTokenCount[msg.sender] = ownerTokenCount[msg.sender].sub(1);
+		ownerTokenCount[_from] = ownerTokenCount[_from].sub(1);
 		tokenToOwner[_tokenId] = _to;
 		Transfer(_from, _to, _tokenId);
 	}

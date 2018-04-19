@@ -6,7 +6,7 @@ ERC20 Contract:
 0x0fdf4894a3b7c5a101686829063be52ad45bcfb7
 
 ERC721 Contract:
-0x0dcd2f752394c41875e259e00bb44fd505297caf
+0x8d50Ed3ba98C03Cfb2462955EF7A0e38bA7939c4
 
 
 	function balanceOf(address who) constant returns (uint256);
@@ -14,8 +14,8 @@ ERC721 Contract:
     function transferFrom(address from, address to, uint256 value) returns (bool);
     function approve(address spender, uint256 value) returns (bool);
 
-approve: "0x0dcd2f752394c41875e259e00bb44fd505297caf", 10000000000000
-allowance: "0x14723a09acff6d2a60dcdf7aa4aff308fddc160c", "0x0dcd2f752394c41875e259e00bb44fd505297caf"
+approve: "0x8d50Ed3ba98C03Cfb2462955EF7A0e38bA7939c4", 10000000000000
+allowance: "0x14723a09acff6d2a60dcdf7aa4aff308fddc160c", "0x8d50Ed3ba98C03Cfb2462955EF7A0e38bA7939c4"
 transferFrom: "0xca35b7d915458ef540ade6068dfe2f44e8fa733c"
 
 
