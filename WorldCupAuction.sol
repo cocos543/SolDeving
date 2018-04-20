@@ -1,7 +1,7 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
-import "./WorldCupOwnership.sol";
-import "./SafaMath.sol";
+import "./WorldCupHelper.sol";
+import "./SafeMath.sol";
 
 /// @dev PayerInterface must implement ERC20 standard token.
 contract PayerInterface {
@@ -15,7 +15,7 @@ contract PayerInterface {
 }
 
 
-contract WorldCupAuction is WorldCupOwnership {
+contract WorldCupAuction is WorldCupHelper {
 
 	using SafeMath for uint256;
 
@@ -61,7 +61,7 @@ contract WorldCupAuction is WorldCupOwnership {
 
     function purchaseWithEth(uint _tokenId) external payable whenNotPaused {
     	require(isEthPayable == true);
-    	require(msg.sender != tokenToOwner[_tokenId]);
+    	require(msg.sender != tokenOwner[_tokenId]);
 
     	/// @dev If `_tokenId` is out of the range of the array,
         /// this will throw automatically and revert all changes.
@@ -91,13 +91,13 @@ contract WorldCupAuction is WorldCupOwnership {
 
     	_transfer(oldOwner, msg.sender, _tokenId);
 
-    	PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
+    	emit PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
     }
 
     function purchaseWithToken(uint _tokenId) external whenNotPaused {
     	require(isEthPayable == false);
     	require(payerContract != address(0));
-    	require(msg.sender != tokenToOwner[_tokenId]);
+    	require(msg.sender != tokenOwner[_tokenId]);
 
         Country storage token = countries[_tokenId];
         uint nextPrice = _computeNextPrice(token);
@@ -122,8 +122,14 @@ contract WorldCupAuction is WorldCupOwnership {
 
         _transfer(oldOwner, msg.sender, _tokenId);
 
-        PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
+        emit PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
 
+    }
+
+    function getTokenNextPrice(uint _tokenId) public view returns(uint) {
+        Country storage token = countries[_tokenId];
+        uint nextPrice = _computeNextPrice(token);
+        return nextPrice;
     }
 
     function _computeNextPrice(Country storage token) private view returns(uint) {
@@ -140,6 +146,19 @@ contract WorldCupAuction is WorldCupOwnership {
 		}
 
     	return nextPrice;
+    }
+
+    function _transfer(address _from, address _to, uint256 _tokenId) internal {
+        // Clear approval.
+        if (tokenApprovals[_tokenId] != address(0)) {
+            tokenApprovals[_tokenId] = address(0);
+            emit Approval(_from, address(0), _tokenId);
+        }
+
+        ownedTokensCount[_to] = ownedTokensCount[_to].add(1);
+        ownedTokensCount[_from] = ownedTokensCount[_from].sub(1);
+        tokenOwner[_tokenId] = _to;
+        emit Transfer(_from, _to, _tokenId);
     }
 
 }

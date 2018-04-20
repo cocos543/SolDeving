@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
 import "./WorldCupControl.sol";
 
@@ -13,11 +13,11 @@ contract WorldCupHelper is WorldCupControl {
 
 	/// @dev return tokenid array
 	function getTokenByOwner(address _owner) external view returns(uint[]) {
-	    uint[] memory result = new uint[](ownerTokenCount[_owner]);
+	    uint[] memory result = new uint[](ownedTokensCount[_owner]);
 	    uint counter = 0;
 
 	    for (uint i = 0; i < countries.length; i++) {
-			if (tokenToOwner[i] == _owner) {
+			if (tokenOwner[i] == _owner) {
 				result[counter] = i;
 				counter++;
 			}

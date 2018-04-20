@@ -1,15 +1,16 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.21;
 
 import "./Claimable.sol";
 import "./Pausable.sol";
-import "./SafaMath.sol";
+import "./SafeMath.sol";
+import "./ERC721BasicToken.sol";
 
 /**
  * @title WorldCupFactory
  * @author Cocos
  * @dev Declare token struct, and generated all toekn
  */
-contract WorldCupFactory is Claimable, Pausable {
+contract WorldCupFactory is Claimable, Pausable, ERC721BasicToken {
 
 	using SafeMath for uint256;
 
@@ -31,11 +32,11 @@ contract WorldCupFactory is Claimable, Pausable {
     /// @dev A mapping from countryIDs to an address that has been approved to call
     ///  transferFrom(). Each Country can only have one approved address for transfer
     ///  at any time. A zero value means no approval is outstanding.
-	mapping (uint => address) public tokenToOwner;
+	//mapping (uint => address) internal tokenOwner;
 
 	// @dev A mapping from owner address to count of tokens that address owns.
     //  Used internally inside balanceOf() to resolve ownership count.
-	mapping (address => uint) ownerTokenCount;
+	//mapping (address => uint) internal ownedTokensCount;
 
 	
 	/// @dev The WorldCupFactory constructor sets the initialized price of One token
@@ -52,8 +53,8 @@ contract WorldCupFactory is Claimable, Pausable {
 	/// @dev Create token with _name, internally.
 	function _createToken(string _name) internal {
 		uint id = countries.push( Country(_name, initPrice) ) - 1;
-		tokenToOwner[id] = msg.sender;
-		ownerTokenCount[msg.sender] = ownerTokenCount[msg.sender].add(1);
+		tokenOwner[id] = msg.sender;
+		ownedTokensCount[msg.sender] = ownedTokensCount[msg.sender].add(1);
 	}
 
 }
