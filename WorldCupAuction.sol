@@ -19,7 +19,7 @@ contract WorldCupAuction is WorldCupHelper {
 
 	using SafeMath for uint256;
 
-	event PurchaseToken(address indexed _from, address indexed _to, uint256 _tokenId, uint256 _tokenPrice);
+	event PurchaseToken(address indexed _from, address indexed _to, uint256 _tokenId, uint256 _tokenPrice, uint256 _timestamp, uint256 _purchaseCounter);
 
 	/// @dev ERC721 Token upper limit of price, cap.
 	///  Cap is the upper limit of price. It represented eth's cap if isEthPayable is true 
@@ -44,6 +44,8 @@ contract WorldCupAuction is WorldCupHelper {
     /// @dev If isEthPayable is true, users can only use eth to buy current erc721 token.
     ///  If isEthPayable is false, that mean's users can only use PayerInterface's token to buy current erc721 token.
     bool public isEthPayable;
+
+    uint public purchaseCounter = 0;
 
     /// @dev Constructor
     /// @param _initPrice erc721 token initialized price.
@@ -91,7 +93,8 @@ contract WorldCupAuction is WorldCupHelper {
 
     	_transfer(oldOwner, msg.sender, _tokenId);
 
-    	emit PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
+    	emit PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice, now, purchaseCounter);
+        purchaseCounter = purchaseCounter.add(1);
     }
 
     function purchaseWithToken(uint _tokenId) external whenNotPaused {
@@ -122,7 +125,8 @@ contract WorldCupAuction is WorldCupHelper {
 
         _transfer(oldOwner, msg.sender, _tokenId);
 
-        emit PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice);
+        emit PurchaseToken(oldOwner, msg.sender, _tokenId, nextPrice, now, purchaseCounter);
+        purchaseCounter = purchaseCounter.add(1);
 
     }
 
