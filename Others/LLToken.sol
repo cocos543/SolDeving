@@ -240,7 +240,7 @@ contract LockableToken is StandardToken, ReentrancyGuard {
     event TransferLockedToken(address indexed from, address indexed to, uint256 value, uint256 releaseTime);
     event ReleaseLockedBalance(address indexed owner, uint256 value, uint256 releaseTime);
 
-    // ç» _to è½¬ç§» _value ä¸ªéå®å° _releaseTime ç token
+    // 
     function transferLockedToken(address _to, uint256 _value, uint256 _releaseTime) nonReentrant returns (bool) {
         require(_releaseTime > now);
         require(_releaseTime.sub(1 years) < now);
@@ -251,7 +251,7 @@ contract LockableToken is StandardToken, ReentrancyGuard {
         return true;
     }
 
-    // æ¥ address çéå®ä½é¢
+    // 
     function lockedBalanceOf(address _owner) constant returns (uint256 value) {
         for (uint i = 0; i < lockedBalanceCount; i++) {
             LockedBalance lockedBalance = lockedBalances[i];
@@ -262,7 +262,7 @@ contract LockableToken is StandardToken, ReentrancyGuard {
         return value;
     }
 
-    // è§£éææå·²å°éå®æ¶é´ç token
+    // 
     function releaseLockedBalance () returns (uint256 releaseAmount) {
         uint index = 0;
         while (index < lockedBalanceCount) {

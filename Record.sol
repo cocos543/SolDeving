@@ -18,7 +18,7 @@ ERC721 Use erc20 token:
     function approve(address spender, uint256 value) returns (bool);
 
 approve: "0x5E684930BCC3690e29322Fe4Cf550F74035164Bf", 10000000000000
-allowance: "0x14723a09acff6d2a60dcdf7aa4aff308fddc160c", "0x5E684930BCC3690e29322Fe4Cf550F74035164Bf"
+allowance: "0x7ccdddf38b7ea862e0a21faca72f464c4b8f0ef7", "0x5E684930BCC3690e29322Fe4Cf550F74035164Bf"
 transferFrom: "0xca35b7d915458ef540ade6068dfe2f44e8fa733c"
 
 
