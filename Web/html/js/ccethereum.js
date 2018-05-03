@@ -80,6 +80,10 @@
 			return this.worldcupContract.methods.getTokenNextPrice(_tokenId).call();
 		}
 
+		this.getTokenPriceListByIds = function(_ids) {
+			return this.worldcupContract.methods.getTokenPriceListByIds(_ids).call();
+		}
+
 		/// @dev Buy token
 		/// @param _money  Use the ETH as a uint.
 		this.purchaseWithEth = function(_tokenId, _money) {
