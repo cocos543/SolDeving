@@ -15,7 +15,52 @@ contract PayerInterface {
 }
 
 
-contract WorldCupAuction is WorldCupHelper {
+
+/**
+ * @title AuctionPaused
+ * @dev Base contract which allows children to implement an emergency stop mechanism.
+ */
+contract AuctionPaused is Ownable {
+  event AuctionPause();
+  event AuctionUnpause();
+
+  bool public auctionPaused = false;
+
+
+  /**
+   * @dev Modifier to make a function callable only when the contract is not auctionPaused.
+   */
+  modifier whenNotAuctionPaused() {
+    require(!auctionPaused);
+    _;
+  }
+
+  /**
+   * @dev Modifier to make a function callable only when the contract is auctionPaused.
+   */
+  modifier whenAuctionPaused() {
+    require(auctionPaused);
+    _;
+  }
+
+  /**
+   * @dev called by the owner to pause, triggers stopped state
+   */
+  function auctionPause() onlyOwner whenNotAuctionPaused public {
+    auctionPaused = true;
+    emit AuctionPause();
+  }
+
+  /**
+   * @dev called by the owner to unpause, returns to normal state
+   */
+  function auctionUnpause() onlyOwner whenAuctionPaused public {
+    auctionPaused = false;
+    emit AuctionUnpause();
+  }
+}
+
+contract WorldCupAuction is WorldCupHelper, AuctionPaused {
 
 	using SafeMath for uint256;
 
@@ -61,7 +106,7 @@ contract WorldCupAuction is WorldCupHelper {
         payerContract = PayerInterface(_address);
     }
 
-    function purchaseWithEth(uint _tokenId) external payable whenNotPaused {
+    function purchaseWithEth(uint _tokenId) external payable whenNotAuctionPaused {
     	require(isEthPayable == true);
     	require(msg.sender != tokenOwner[_tokenId]);
 
@@ -97,7 +142,7 @@ contract WorldCupAuction is WorldCupHelper {
         purchaseCounter = purchaseCounter.add(1);
     }
 
-    function purchaseWithToken(uint _tokenId) external whenNotPaused {
+    function purchaseWithToken(uint _tokenId) external whenNotAuctionPaused {
     	require(isEthPayable == false);
     	require(payerContract != address(0));
     	require(msg.sender != tokenOwner[_tokenId]);

@@ -5,12 +5,42 @@ import "./Pausable.sol";
 import "./SafeMath.sol";
 import "./ERC721BasicToken.sol";
 
+
+contract PausableToken is ERC721BasicToken, Pausable {
+	function approve(address _to, uint256 _tokenId) public whenNotPaused {
+		super.approve(_to, _tokenId);
+	}
+
+	function setApprovalForAll(address _operator, bool _approved) public whenNotPaused {
+		super.setApprovalForAll(_operator, _approved);
+	}
+
+	function transferFrom(address _from, address _to, uint256 _tokenId) public whenNotPaused {
+		super.transferFrom(_from, _to, _tokenId);
+	}
+
+	function safeTransferFrom(address _from, address _to, uint256 _tokenId) public whenNotPaused {
+		super.safeTransferFrom(_from, _to, _tokenId);
+	}
+	
+	function safeTransferFrom(
+	    address _from,
+	    address _to,
+	    uint256 _tokenId,
+	    bytes _data
+	  )
+	    public whenNotPaused {
+		super.safeTransferFrom(_from, _to, _tokenId, _data);
+	}
+}
+
+
 /**
  * @title WorldCupFactory
  * @author Cocos
  * @dev Declare token struct, and generated all toekn
  */
-contract WorldCupFactory is Claimable, Pausable, ERC721BasicToken {
+contract WorldCupFactory is Claimable, PausableToken {
 
 	using SafeMath for uint256;
 
@@ -42,7 +72,7 @@ contract WorldCupFactory is Claimable, Pausable, ERC721BasicToken {
 	/// @dev The WorldCupFactory constructor sets the initialized price of One token
 	function WorldCupFactory(uint _initPrice) public {
 		initPrice = _initPrice;
-		
+		paused    = true;
 		// Create tokens
 		for (uint i = 0; i < initTokenData.length; i++) {
 		    _createToken(initTokenData[i]);

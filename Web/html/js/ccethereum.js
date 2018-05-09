@@ -80,12 +80,16 @@
 			return this.worldcupContract.methods.getTokenNextPrice(_tokenId).call();
 		}
 
+		this.getTokenByOwner = function() {
+			return this.worldcupContract.methods.getTokenByOwner(this.userAccount).call();	
+		}
+
 		this.getTokenPriceListByIds = function(_ids) {
 			return this.worldcupContract.methods.getTokenPriceListByIds(_ids).call();
 		}
 
 		/// @dev Buy token
-		/// @param _money  Use the ETH as a uint.
+		/// @param _money  Use the ETH as a unit.
 		this.purchaseWithEth = function(_tokenId, _money) {
 			return this.worldcupContract.methods.purchaseWithEth(_tokenId).send( {from: this.userAccount, value: this.web3js.utils.toWei(_money,"ether")} );
 		}
@@ -99,7 +103,7 @@
 		}
 
 		/// @dev Buy token
-		/// @param _money  Use the ETH as a uint.
+		/// @param _money  Use the ERC20 accurate unit.
 		this.purchaseWithToken = function(_tokenId) {
 			return this.worldcupContract.methods.purchaseWithToken(_tokenId).send( {from: this.userAccount} );
 		}
