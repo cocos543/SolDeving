@@ -80,8 +80,8 @@
 			return this.worldcupContract.methods.getTokenNextPrice(_tokenId).call();
 		}
 
-		this.getTokenByOwner = function() {
-			return this.worldcupContract.methods.getTokenByOwner(this.userAccount).call();	
+		this.getTokenByOwner = function(_address) {
+			return this.worldcupContract.methods.getTokenByOwner(_address).call();	
 		}
 
 		this.getTokenPriceListByIds = function(_ids) {
@@ -89,9 +89,9 @@
 		}
 
 		/// @dev Buy token
-		/// @param _money  Use the ETH as a unit.
+		/// @param _money  Use the Wei as a unit.
 		this.purchaseWithEth = function(_tokenId, _money) {
-			return this.worldcupContract.methods.purchaseWithEth(_tokenId).send( {from: this.userAccount, value: this.web3js.utils.toWei(_money,"ether")} );
+			return this.worldcupContract.methods.purchaseWithEth(_tokenId).send( {from: this.userAccount, value: _money} );
 		}
 
 		this.queryAllowance = function() {
