@@ -46,7 +46,7 @@ contract WorldCupFactory is Claimable, PausableToken {
 
 	uint public initPrice;
 
-	string[] public initTokenData = ["a", "b", "c"];
+	//string[] public initTokenData = [];
 
 	// @dev Declare token struct    
 	struct Country {
@@ -73,12 +73,23 @@ contract WorldCupFactory is Claimable, PausableToken {
 	function WorldCupFactory(uint _initPrice) public {
 		initPrice = _initPrice;
 		paused    = true;
-		// Create tokens
-		for (uint i = 0; i < initTokenData.length; i++) {
-		    _createToken(initTokenData[i]);
-		}
 	}
 
+	function createToken() external onlyOwner {
+		// Create tokens
+		uint length = countries.length;
+		for (uint i = length; i < length + 100; i++) {
+			if (i >= 836 ) {
+				break;
+			}
+
+			if (i < 101) {
+				_createToken("Country");
+			}else {
+				_createToken("Player");
+			}
+		}
+	}
 
 	/// @dev Create token with _name, internally.
 	function _createToken(string _name) internal {

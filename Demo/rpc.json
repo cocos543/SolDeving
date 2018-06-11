@@ -1,0 +1,4 @@
+curl -X POST --data '{"jsonrpc":"2.0","method":"eth_coinbase","params":[],"id":4}' -H "Content-Type: application/json" "http://localhost:8545"
+
+
+curl -X POST --data '{"jsonrpc":"2.0", "method":"eth_call", "params":[{"from": "0x7ccdddf38b7ea862e0a21faca72f464c4b8f0ef7", "to": "0xff620c44727c2af9a705598eb6781592986fc0a9", "data": "0x70a08231b98ef4ca268c9cc3f6b4590e4bfec28280db06bb5d45e689f2a360be"}], "id":4}' -H "Content-Type: application/json" "http://localhost:8545"
