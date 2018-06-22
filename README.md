@@ -1,5 +1,5 @@
 # SolDeving
-本项目遵循以太坊ERC721游戏合约.
+本项目遵循以太坊ERC721合约.
 
 下面是使用本合约的平台:
 https://world-cup.games
